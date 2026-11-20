@@ -38,6 +38,8 @@ h1{font-size:clamp(35px,9vw,65px);color:#e1bd79;margin:0 0 18px}
  font-weight:bold;border:0;cursor:pointer;font-family:inherit;
 }
 .btn:hover{background:#d6ad65}
+.btn.secondary{background:#393225;color:#eee7d5;border:1px solid #80663d}
+.btn.danger{background:#743d32;color:white}
 section{padding:45px 20px;text-align:center;scroll-margin-top:85px}
 h2{color:#d6ad65}
 .cards{
@@ -50,9 +52,7 @@ h2{color:#d6ad65}
 }
 .card h3{color:#d6ad65;margin-top:8px}
 .card p{color:#aaa18e;line-height:1.9;font-size:14px}
-.civilization{
- cursor:pointer;transition:.2s;min-height:110px;
-}
+.civilization{cursor:pointer;transition:.2s;min-height:110px}
 .civilization:hover{border-color:#d6ad65;transform:translateY(-3px)}
 .civilization.selected{border:2px solid #d6ad65;background:#292216}
 .notice{
@@ -60,18 +60,57 @@ h2{color:#d6ad65}
  border:1px solid #554324;border-radius:8px;
  color:#d8c9a9;line-height:2;background:#191813;
 }
-.hidden{display:none}
+.hidden{display:none!important}
 footer{
  padding:25px;text-align:center;border-top:1px solid #554324;
  color:#8e8778;font-size:12px;
 }
-button:focus-visible,a:focus-visible{
+button:focus-visible,a:focus-visible,input:focus-visible{
  outline:2px solid #e1bd79;outline-offset:4px
 }
+.auth-wrap{max-width:850px;margin:25px auto}
+.auth-box{
+ background:#191813;border:1px solid #554324;
+ border-radius:10px;padding:22px;margin:18px auto;
+ max-width:600px;text-align:right;
+}
+.auth-box h3{color:#d6ad65;text-align:center;margin-top:0}
+.auth-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+.auth-tabs button{
+ background:#29251c;color:#eee7d5;border:1px solid #554324;
+ padding:10px 16px;border-radius:5px;cursor:pointer;font-family:inherit
+}
+.auth-tabs button.active{background:#b58a47;color:#17130d}
+.field{margin:13px 0}
+.field label{display:block;margin-bottom:7px;color:#d8c9a9;font-size:14px}
+.field input{
+ width:100%;padding:13px;border-radius:5px;
+ border:1px solid #554324;background:#10100e;
+ color:#eee7d5;font-family:inherit;font-size:15px;
+}
+.auth-message{
+ padding:12px;margin-top:14px;border-radius:5px;
+ background:#29251c;color:#e7d5ad;line-height:1.9;
+ white-space:pre-wrap;overflow-wrap:anywhere;
+}
+.auth-message.error{background:#40231f;color:#ffc9bd}
+.auth-message.success{background:#203126;color:#c6edcf}
+.dashboard-grid{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+ gap:12px;margin-top:18px
+}
+.stat{
+ padding:16px;background:#10100e;border:1px solid #554324;border-radius:7px
+}
+.stat small{display:block;color:#aaa18e;margin-bottom:8px}
+.stat strong{color:#e1bd79;font-size:18px;overflow-wrap:anywhere}
+.panel-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.muted{color:#aaa18e;font-size:13px;line-height:1.9}
 @media(max-width:500px){
  header{justify-content:center}
  nav{justify-content:center}
  nav a{font-size:12px}
+ .auth-box{padding:15px}
 }
 </style>
 </head>
@@ -88,6 +127,7 @@ button:focus-visible,a:focus-visible{
   <a href="#economy">اقتصاد</a>
   <a href="#kingdom">پادشاهی</a>
   <a href="#shop">فروشگاه</a>
+  <a href="#account">حساب کاربری</a>
  </nav>
 </header>
 
@@ -101,6 +141,7 @@ button:focus-visible,a:focus-visible{
    و در تاریخ تمدن‌های باستانی نامی جاودانه بساز.
   </p>
   <a class="btn" href="#civilizations">مشاهده تمدن‌ها</a>
+  <a class="btn secondary" href="#account">ورود به حساب</a>
  </div>
 </section>
 
@@ -134,6 +175,115 @@ button:focus-visible,a:focus-visible{
  </div>
 </section>
 
+<section id="account">
+ <h2>👤 حساب کاربری</h2>
+ <p>برای ورود به دنیای PIXEL WAR حساب خود را بساز یا وارد شو.</p>
+
+ <div id="authArea" class="auth-wrap">
+  <div class="auth-box">
+   <div class="auth-tabs">
+    <button type="button" id="showLogin" class="active">ورود بازیکن</button>
+    <button type="button" id="showRegister">ثبت‌نام بازیکن</button>
+   </div>
+
+   <form id="loginForm">
+    <h3>ورود به حساب</h3>
+    <div class="field">
+     <label for="loginEmail">ایمیل</label>
+     <input id="loginEmail" type="email" autocomplete="email" required>
+    </div>
+    <div class="field">
+     <label for="loginPassword">رمز عبور</label>
+     <input id="loginPassword" type="password" autocomplete="current-password" required>
+    </div>
+    <button class="btn" type="submit" id="loginButton">ورود</button>
+   </form>
+
+   <form id="registerForm" class="hidden">
+    <h3>ساخت حساب بازیکن</h3>
+    <div class="field">
+     <label for="registerUsername">نام کاربری</label>
+     <input id="registerUsername" type="text" minlength="3" maxlength="24"
+      autocomplete="username" required placeholder="نام کاربری دلخواه">
+    </div>
+    <div class="field">
+     <label for="registerEmail">ایمیل</label>
+     <input id="registerEmail" type="email" autocomplete="email" required>
+    </div>
+    <div class="field">
+     <label for="registerPassword">رمز عبور (حداقل ۶ کاراکتر)</label>
+     <input id="registerPassword" type="password" minlength="6"
+      autocomplete="new-password" required>
+    </div>
+    <button class="btn" type="submit" id="registerButton">ساخت حساب</button>
+   </form>
+
+   <div id="authMessage" class="auth-message hidden" role="status"></div>
+  </div>
+ </div>
+
+ <div id="playerArea" class="auth-box hidden">
+  <h3>👑 داشبورد بازیکن</h3>
+  <p id="playerWelcome" class="muted"></p>
+
+  <div class="dashboard-grid">
+   <div class="stat">
+    <small>نام کاربری</small>
+    <strong id="dashUsername">—</strong>
+   </div>
+   <div class="stat">
+    <small>تمدن انتخاب‌شده</small>
+    <strong id="dashCountry">انتخاب نشده</strong>
+   </div>
+   <div class="stat">
+    <small>موجودی خزانه</small>
+    <strong id="dashBalance">—</strong>
+   </div>
+   <div class="stat">
+    <small>درآمد روزانه</small>
+    <strong id="dashIncome">—</strong>
+   </div>
+  </div>
+
+  <p class="muted">
+   اطلاعات نمایش داده‌شده از حساب کاربری شما در پایگاه داده خوانده می‌شود.
+  </p>
+
+  <div class="panel-actions">
+   <button type="button" class="btn secondary" id="refreshDashboard">بروزرسانی اطلاعات</button>
+   <button type="button" class="btn danger" id="logoutButton">خروج از حساب</button>
+  </div>
+
+  <div class="auth-box">
+   <h3>🔐 ورود به مدیریت</h3>
+   <p class="muted">
+    ورود مدیر با حساب ایمیل و رمز عبور انجام می‌شود و سپس کد مدیریت بررسی خواهد شد.
+    این بخش برای مدیر است و نیازی به انتخاب تمدن ندارد.
+   </p>
+   <form id="adminForm">
+    <div class="field">
+     <label for="adminCode">کد مدیریت</label>
+     <input id="adminCode" type="password" autocomplete="off" required>
+    </div>
+    <button type="submit" class="btn">تأیید کد و ورود به مدیریت</button>
+   </form>
+   <div id="adminMessage" class="auth-message hidden" role="status"></div>
+  </div>
+
+  <div id="adminArea" class="auth-box hidden">
+   <h3>🛡 پنل مدیریت PIXEL WAR</h3>
+   <p class="auth-message success">
+    هویت مدیر تأیید شد و دسترسی مدیریتی فعال است.
+   </p>
+   <p class="muted">
+    این نسخه، ورود امن و پوسته اولیه پنل مدیریت را فعال می‌کند.
+    ابزارهای مدیریت بازیکنان، تمدن‌ها، اقتصاد و پایان روز باید در مرحله بعد
+    به توابع مدیریتی دیتابیس متصل شوند.
+   </p>
+  </div>
+ </div>
+</section>
+
 <section id="civilizations">
  <h2>🏛 انتخاب تمدن</h2>
  <p>تمدن مورد علاقه‌ات را انتخاب کن.</p>
@@ -159,7 +309,8 @@ button:focus-visible,a:focus-visible{
  <div class="notice">
   مدیریت خزانه، درآمد روزانه، منابع و ساختمان‌های اقتصادی
   در این بخش قرار می‌گیرد.
-  <br>اطلاعات مالی هنوز به کیف پول Supabase متصل نیست.
+  <br>موجودی و درآمد حساب از اطلاعات کیف پول بازیکن خوانده می‌شود؛
+  عملیات اقتصادی هنوز فعال نشده است.
  </div>
 </section>
 
@@ -167,7 +318,7 @@ button:focus-visible,a:focus-visible{
  <h2>👑 پادشاهی من</h2>
  <div class="notice">
   اطلاعات پادشاه، کشور، وضعیت امپراتوری و آمار بازیکن
-  در این بخش نمایش داده خواهد شد.
+  در داشبورد حساب کاربری نمایش داده می‌شود.
  </div>
 </section>
 
@@ -186,7 +337,21 @@ button:focus-visible,a:focus-visible{
  PIXEL WAR Ancient | دنیای استراتژی و تمدن‌های تاریخی
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+"use strict";
+
+/* تنظیمات اتصال Supabase */
+const SUPABASE_URL = "https://knqlsbiduvpmlvqxfegh.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_668mGBx_30R_yxupVlWDcw_yd4rAF3M";
+
+const supabaseClient = window.supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_PUBLISHABLE_KEY
+);
+
+/* فهرست ۲۲ تمدن */
 const civilizations = [
  "شاهنشاهی هخامنشی",
  "امپراتوری بابل",
@@ -212,27 +377,319 @@ const civilizations = [
  "پادشاهی فریگیه"
 ];
 
+/* نمایش تمدن‌ها */
 const list = document.getElementById("civilizationList");
-const message = document.getElementById("selectionMessage");
+const selectionMessage = document.getElementById("selectionMessage");
 
-civilizations.forEach((name,index)=>{
- const card=document.createElement("button");
- card.type="button";
- card.className="card civilization";
- card.innerHTML="<h3></h3><p>برای انتخاب لمس کن</p>";
- card.querySelector("h3").textContent=name;
+civilizations.forEach((name) => {
+ const card = document.createElement("button");
+ card.type = "button";
+ card.className = "card civilization";
 
- card.addEventListener("click",()=>{
-  document.querySelectorAll(".civilization").forEach(item=>{
-   item.classList.remove("selected");
-  });
+ const title = document.createElement("h3");
+ title.textContent = name;
+
+ const description = document.createElement("p");
+ description.textContent = "برای انتخاب لمس کن";
+
+ card.append(title, description);
+
+ card.addEventListener("click", () => {
+  document.querySelectorAll("#civilizationList .civilization")
+   .forEach(item => item.classList.remove("selected"));
+
   card.classList.add("selected");
-  message.textContent="تمدن انتخاب‌شده: "+name+
-   " | این انتخاب فعلاً آزمایشی است و در حساب کاربری ذخیره نمی‌شود.";
+  selectionMessage.textContent =
+   "تمدن انتخاب‌شده: " + name +
+   " | انتخاب فعلاً آزمایشی است و هنوز در حساب ذخیره نمی‌شود.";
  });
+
  list.appendChild(card);
 });
-</script>
 
-</body>
-</html>
+/* عناصر رابط کاربری */
+const authArea = document.getElementById("authArea");
+const playerArea = document.getElementById("playerArea");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+const authMessage = document.getElementById("authMessage");
+const adminMessage = document.getElementById("adminMessage");
+const adminArea = document.getElementById("adminArea");
+
+function showMessage(element, message, type) {
+ element.textContent = message;
+ element.className = "auth-message";
+ if (type) element.classList.add(type);
+}
+
+function hideMessage(element) {
+ element.textContent = "";
+ element.className = "auth-message hidden";
+}
+
+function formatNumber(value) {
+ if (value === null || value === undefined || value === "") return "—";
+ const number = Number(value);
+ if (!Number.isFinite(number)) return String(value);
+ return number.toLocaleString("fa-IR") + " درهم";
+}
+
+function showLoginTab() {
+ loginForm.classList.remove("hidden");
+ registerForm.classList.add("hidden");
+ document.getElementById("showLogin").classList.add("active");
+ document.getElementById("showRegister").classList.remove("active");
+ hideMessage(authMessage);
+}
+
+function showRegisterTab() {
+ registerForm.classList.remove("hidden");
+ loginForm.classList.add("hidden");
+ document.getElementById("showRegister").classList.add("active");
+ document.getElementById("showLogin").classList.remove("active");
+ hideMessage(authMessage);
+}
+
+document.getElementById("showLogin").addEventListener("click", showLoginTab);
+document.getElementById("showRegister").addEventListener("click", showRegisterTab);
+
+/* ثبت‌نام بازیکن */
+registerForm.addEventListener("submit", async (event) => {
+ event.preventDefault();
+
+ const username = document.getElementById("registerUsername").value.trim();
+ const email = document.getElementById("registerEmail").value.trim();
+ const password = document.getElementById("registerPassword").value;
+
+ if (username.length < 3) {
+  showMessage(authMessage, "نام کاربری باید حداقل ۳ کاراکتر باشد.", "error");
+  return;
+ }
+
+ const button = document.getElementById("registerButton");
+ button.disabled = true;
+ button.textContent = "در حال ساخت حساب...";
+
+ try {
+  const { data, error } = await supabaseClient.auth.signUp({
+   email,
+   password,
+   options: {
+    data: {
+     username: username,
+     display_name: username
+    }
+   }
+  });
+
+  if (error) throw error;
+
+  if (data.session) {
+   showMessage(authMessage, "حساب ساخته شد. خوش آمدی!", "success");
+   registerForm.reset();
+  } else {
+   showMessage(
+    authMessage,
+    "درخواست ثبت‌نام انجام شد. اگر تأیید ایمیل در Supabase فعال باشد، ایمیل خود را بررسی و حساب را تأیید کن؛ سپس وارد شو.",
+    "success"
+   );
+   registerForm.reset();
+  }
+ } catch (error) {
+  showMessage(authMessage, "خطا در ثبت‌نام: " + error.message, "error");
+ } finally {
+  button.disabled = false;
+  button.textContent = "ساخت حساب";
+ }
+});
+
+/* ورود بازیکن و حساب مدیر */
+loginForm.addEventListener("submit", async (event) => {
+ event.preventDefault();
+
+ const email = document.getElementById("loginEmail").value.trim();
+ const password = document.getElementById("loginPassword").value;
+
+ const button = document.getElementById("loginButton");
+ button.disabled = true;
+ button.textContent = "در حال ورود...";
+
+ try {
+  const { error } = await supabaseClient.auth.signInWithPassword({
+   email,
+   password
+  });
+
+  if (error) throw error;
+
+  showMessage(authMessage, "ورود موفقیت‌آمیز بود.", "success");
+ } catch (error) {
+  showMessage(authMessage, "خطا در ورود: " + error.message, "error");
+ } finally {
+  button.disabled = false;
+  button.textContent = "ورود";
+ }
+});
+
+/* دریافت اطلاعات حساب بازیکن */
+async function loadPlayerDashboard(user) {
+ authArea.classList.add("hidden");
+ playerArea.classList.remove("hidden");
+ adminArea.classList.add("hidden");
+ hideMessage(adminMessage);
+
+ document.getElementById("playerWelcome").textContent =
+  "حساب فعال: " + (user.email || "");
+
+ document.getElementById("dashUsername").textContent = "در حال دریافت...";
+ document.getElementById("dashCountry").textContent = "—";
+ document.getElementById("dashBalance").textContent = "—";
+ document.getElementById("dashIncome").textContent = "—";
+
+ try {
+  const [playerResult, walletResult] = await Promise.all([
+   supabaseClient
+    .from("player_profiles")
+    .select("username, display_name, country_id")
+    .eq("id", user.id)
+    .maybeSingle(),
+
+   supabaseClient
+    .from("player_wallets")
+    .select("balance, base_daily_income, total_daily_income, debt")
+    .eq("user_id", user.id)
+    .maybeSingle()
+  ]);
+
+  if (playerResult.error) throw playerResult.error;
+  if (walletResult.error) throw walletResult.error;
+
+  const player = playerResult.data;
+  const wallet = walletResult.data;
+
+  document.getElementById("dashUsername").textContent =
+   player?.username || player?.display_name || "ثبت نشده";
+
+  document.getElementById("dashCountry").textContent =
+   player?.country_id || "انتخاب نشده";
+
+  document.getElementById("dashBalance").textContent =
+   wallet ? formatNumber(wallet.balance) : "اطلاعات موجود نیست";
+
+  document.getElementById("dashIncome").textContent =
+   wallet
+    ? formatNumber(wallet.total_daily_income ?? wallet.base_daily_income)
+    : "اطلاعات موجود نیست";
+
+ } catch (error) {
+  showMessage(
+   adminMessage,
+   "حساب وارد شده، اما دریافت بعضی اطلاعات بازیکن با مشکل مواجه شد: " +
+    error.message,
+   "error"
+  );
+ }
+}
+
+/* تأیید کد مدیر از طریق تابع امن دیتابیس */
+document.getElementById("adminForm").addEventListener("submit", async (event) => {
+ event.preventDefault();
+
+ const code = document.getElementById("adminCode").value.trim();
+
+ if (!code) {
+  showMessage(adminMessage, "کد مدیریت را وارد کن.", "error");
+  return;
+ }
+
+ const button = event.submitter;
+ if (button) {
+  button.disabled = true;
+  button.textContent = "در حال بررسی...";
+ }
+
+ try {
+  const { data, error } = await supabaseClient.rpc(
+   "admin_verify_code",
+   { p_code: code }
+  );
+
+  if (error) throw error;
+
+  const result = Array.isArray(data) ? data[0] : data;
+
+  if (result && result.success === true) {
+   adminArea.classList.remove("hidden");
+   showMessage(
+    adminMessage,
+    "ورود مدیر تأیید شد. دسترسی مدیریتی فعال است.",
+    "success"
+   );
+   document.getElementById("adminCode").value = "";
+  } else {
+   adminArea.classList.add("hidden");
+   showMessage(
+    adminMessage,
+    result?.message || "کد مدیریت تأیید نشد.",
+    "error"
+   );
+  }
+ } catch (error) {
+  adminArea.classList.add("hidden");
+  showMessage(
+   adminMessage,
+   "خطا در بررسی کد مدیریت: " + error.message,
+   "error"
+  );
+ } finally {
+  if (button) {
+   button.disabled = false;
+   button.textContent = "تأیید کد و ورود به مدیریت";
+  }
+ }
+});
+
+/* خروج از حساب */
+document.getElementById("logoutButton").addEventListener("click", async () => {
+ const { error } = await supabaseClient.auth.signOut();
+
+ if (error) {
+  showMessage(adminMessage, "خطا در خروج: " + error.message, "error");
+ }
+});
+
+/* بروزرسانی اطلاعات */
+document.getElementById("refreshDashboard").addEventListener("click", async () => {
+ const { data } = await supabaseClient.auth.getUser();
+
+ if (data.user) {
+  await loadPlayerDashboard(data.user);
+ }
+});
+
+/* بررسی وضعیت ورود هنگام باز شدن سایت */
+async function initializeApp() {
+ try {
+  const { data, error } = await supabaseClient.auth.getSession();
+  if (error) throw error;
+
+  if (data.session?.user) {
+   await loadPlayerDashboard(data.session.user);
+  }
+ } catch (error) {
+  showMessage(
+   authMessage,
+   "ارتباط با حساب کاربری برقرار نشد: " + error.message,
+   "error"
+  );
+ }
+}
+
+supabaseClient.auth.onAuthStateChange((event, session) => {
+ if (session?.user) {
+  if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+   loadPlayerDashboard(session.user);
+  }
+ } else {
+  playerArea.classList.add("hidden");
+  authArea.classL
