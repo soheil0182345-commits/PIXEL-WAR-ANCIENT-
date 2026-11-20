@@ -1,661 +1,214 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#10100e">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0b0a">
 <title>PIXEL WAR | Ancient</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:#10100e;color:#eee7d5;font-family:Tahoma,Arial,sans-serif}
-header{padding:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;border-bottom:1px solid #554324;background:#15140f;position:sticky;top:0;z-index:10}
-.logo{font-size:22px;font-weight:bold;letter-spacing:2px;color:#d6ad65}
-nav{display:flex;flex-wrap:wrap;gap:12px}
-nav a{color:#d8c9a9;text-decoration:none;font-size:13px}
-nav a:hover{color:#e8bd70}
-.hero{min-height:65vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:35px 20px;background:radial-gradient(ellipse at center,#69502c,#10100e 75%)}
-h1{font-size:clamp(35px,9vw,65px);color:#e1bd79;margin:0 0 18px}
-h2,h3{color:#d6ad65}
-.hero p{line-height:2;color:#c7bda8;max-width:540px;margin:0 auto 28px}
-.btn{display:inline-block;background:#b58a47;color:#17130d;padding:12px 20px;border-radius:5px;text-decoration:none;font-weight:bold;border:0;cursor:pointer;font-family:inherit}
-.btn:hover{background:#d6ad65}
-.btn.secondary{background:#393225;color:#eee7d5;border:1px solid #80663d}
-.btn.danger{background:#743d32;color:white}
-button:disabled{opacity:.55;cursor:wait}
-section{padding:42px 18px;text-align:center;scroll-margin-top:85px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;max-width:1000px;margin:24px auto}
-.card,.auth-box{padding:20px 15px;border:1px solid #554324;background:#191813;border-radius:8px;color:#eee7d5}
-.card p,.muted{color:#aaa18e;line-height:1.9;font-size:13px}
-.civilization{cursor:pointer;transition:.2s;min-height:100px;width:100%;font-family:inherit}
-.civilization:hover{border-color:#d6ad65;transform:translateY(-2px)}
-.civilization.selected{border:2px solid #d6ad65;background:#292216}
-.notice{max-width:700px;margin:18px auto;padding:15px;border:1px solid #554324;border-radius:8px;color:#d8c9a9;line-height:2;background:#191813}
-.hidden{display:none!important}
-footer{padding:25px;text-align:center;border-top:1px solid #554324;color:#8e8778;font-size:12px}
-.auth-wrap{max-width:850px;margin:25px auto}
-.auth-box{max-width:650px;margin:18px auto;text-align:right}
-.auth-box h3{text-align:center;margin-top:0}
-.auth-tabs,.panel-actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:15px 0}
-.auth-tabs button{background:#29251c;color:#eee7d5;border:1px solid #554324;padding:10px 16px;border-radius:5px;cursor:pointer;font-family:inherit}
-.auth-tabs button.active{background:#b58a47;color:#17130d}
-.field{margin:13px 0}
-.field label{display:block;margin-bottom:7px;color:#d8c9a9;font-size:14px}
-.field input{width:100%;padding:12px;border-radius:5px;border:1px solid #554324;background:#10100e;color:#eee7d5;font-family:inherit;font-size:15px}
-.auth-message{padding:12px;margin-top:14px;border-radius:5px;background:#29251c;color:#e7d5ad;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere}
-.auth-message.error{background:#40231f;color:#ffc9bd}
-.auth-message.success{background:#203126;color:#c6edcf}
-.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-top:18px}
-.stat{padding:15px;background:#10100e;border:1px solid #554324;border-radius:7px}
-.stat small{display:block;color:#aaa18e;margin-bottom:8px}
-.stat strong{color:#e1bd79;font-size:17px;overflow-wrap:anywhere}
-@media(max-width:500px){header{justify-content:center}nav{justify-content:center}nav a{font-size:12px}.auth-box{padding:14px}}
+:root{--bg:#0b0b0a;--panel:#151512;--panel2:#1d1b15;--gold:#d6ad52;--gold2:#f0d58a;--text:#f3f0e8;--muted:#aaa394;--red:#9d3932;--line:#40351f}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#282113 0,#11100d 38%,#080807 100%);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.wrap{max-width:1100px;margin:auto;padding:18px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid var(--line);margin-bottom:20px}
+.brand{font-weight:900;letter-spacing:2px;color:var(--gold2);font-size:clamp(20px,4vw,30px)}.brand small{display:block;font-size:11px;letter-spacing:4px;color:var(--muted);margin-top:5px}
+.pill{border:1px solid var(--line);border-radius:30px;padding:8px 12px;color:var(--gold2);font-size:12px}
+.card{background:linear-gradient(145deg,#1a1914,#11110f);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 12px 35px #0007}
+h1,h2,h3{color:var(--gold2);margin-top:0}h1{font-size:23px}h2{font-size:18px}.muted{color:var(--muted);font-size:13px;line-height:1.8}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.auth{max-width:470px;margin:5vh auto}.tabs{display:flex;gap:8px;margin-bottom:16px}.tabs button{flex:1}.btn{border:1px solid #8c6c2f;background:linear-gradient(135deg,#d7b45f,#9e762e);color:#17130a;padding:11px 16px;border-radius:10px;font-weight:800}.btn.secondary{background:#211d14;color:var(--gold2);border-color:var(--line)}.btn.danger{background:#55231f;color:#fff;border-color:#8c3932}.btn:disabled{opacity:.5;cursor:not-allowed}
+.field{margin:12px 0}.field label{display:block;color:var(--muted);font-size:13px;margin-bottom:7px}.field input{width:100%;background:#090908;border:1px solid #4b402a;border-radius:9px;padding:12px;color:white;outline:none}.field input:focus{border-color:var(--gold)}
+.hidden{display:none!important}.notice{padding:11px;border-radius:10px;background:#292316;border:1px solid var(--line);color:var(--gold2);font-size:13px;line-height:1.8;margin:12px 0}.stat{font-size:25px;color:var(--gold2);font-weight:bold;margin-top:8px}.section{margin:20px 0}.actions{display:flex;gap:8px;flex-wrap:wrap}.item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #30291d}.item:last-child{border:0}.badge{font-size:11px;color:var(--gold2);border:1px solid var(--line);padding:5px 8px;border-radius:20px}
+footer{text-align:center;color:#746d5f;font-size:11px;padding:28px 0}
+@media(max-width:600px){.wrap{padding:12px}.top{align-items:flex-start}.card{padding:15px}}
 </style>
 </head>
 <body>
-<header>
- <div class="logo">PIXEL WAR</div>
- <nav>
-  <a href="#home">خانه</a>
-  <a href="#about">درباره بازی</a>
-  <a href="#civilizations">تمدن‌ها</a>
-  <a href="#army">ارتش</a>
-  <a href="#economy">اقتصاد</a>
-  <a href="#kingdom">پادشاهی</a>
-  <a href="#shop">فروشگاه</a>
-  <a href="#account">حساب کاربری</a>
- </nav>
-</header>
-<main>
-<section class="hero" id="home">
- <div>
-  <h1>PIXEL WAR</h1>
-  <p>امپراتوری خود را بنا کن، ارتش خود را فرماندهی کن و در تاریخ تمدن‌های باستانی نامی جاودانه بساز.</p>
-  <a class="btn" href="#civilizations">مشاهده تمدن‌ها</a>
-  <a class="btn secondary" href="#account">ورود به حساب</a>
- </div>
+<div class="wrap">
+<header class="top"><div class="brand">PIXEL WAR <small>ANCIENT • STRATEGY WORLD</small></div><div class="pill">فصل باستان | نسخه آزمایشی</div></header>
+
+<section id="authView" class="auth card">
+<h1>ورود به امپراتوری</h1>
+<p class="muted">برای ورود یا ساخت فرمانروایی جدید، نام کاربری و رمز عبور را وارد کن.</p>
+<div class="tabs"><button class="btn" id="loginTab" type="button">ورود</button><button class="btn secondary" id="signupTab" type="button">ثبت‌نام</button></div>
+<div class="field"><label>نام کاربری</label><input id="username" maxlength="24" autocomplete="username" placeholder="مثلاً Cyrus"></div>
+<div class="field"><label>رمز عبور</label><input id="password" type="password" minlength="8" autocomplete="current-password" placeholder="حداقل ۸ کاراکتر"></div>
+<div class="field hidden" id="displayNameField"><label>نام نمایشی (اختیاری)</label><input id="displayName" maxlength="32" placeholder="نام فرمانروا"></div>
+<button class="btn" id="authBtn" style="width:100%">ورود به بازی</button>
+<div id="authMsg" class="notice hidden" role="status"></div>
+<p class="muted">برای حساب‌های جدید، ایمیل واقعی از شما خواسته نمی‌شود. بازیابی رمز عبور از طریق ایمیل در این روش فعال نیست.</p>
 </section>
 
-<section id="about">
- <h2>عصر امپراتوری‌ها</h2>
- <p>در جهانی از تمدن‌ها، اقتصاد، سیاست و جنگ، سرنوشت امپراتوری خودت را رقم بزن.</p>
+<section id="gameView" class="hidden">
+<div class="card section">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+<div><h1 id="welcome">فرمانروا</h1><div class="muted" id="countryLabel">هنوز کشوری انتخاب نشده است</div></div>
+<div class="actions"><button class="btn secondary" id="adminOpen">ورود مدیر</button><button class="btn danger" id="logoutBtn">خروج</button></div>
+</div>
+</div>
+<div class="grid section">
+<div class="card"><div class="muted">موجودی خزانه</div><div class="stat" id="balance">—</div><div class="muted">درهم</div></div>
+<div class="card"><div class="muted">درآمد روزانه</div><div class="stat" id="income">—</div><div class="muted">درهم در روز</div></div>
+<div class="card"><div class="muted">قدرت دفاعی</div><div class="stat" id="defense">—</div><div class="muted">امتیاز</div></div>
+</div>
+<div class="grid section">
+<div class="card"><h2>تمدن و کشور</h2><div id="countryArea" class="muted">در حال دریافت اطلاعات...</div></div>
+<div class="card"><h2>ارتش</h2><div id="armyArea" class="muted">در حال دریافت اطلاعات...</div></div>
+<div class="card"><h2>انبار تجهیزات</h2><div id="inventoryArea" class="muted">در حال دریافت اطلاعات...</div></div>
+</div>
+<div class="card section"><h2>فروشگاه امپراتوری</h2><div id="shopArea" class="muted">در حال دریافت کالاها...</div></div>
 </section>
 
-<section id="features">
- <h2>جهان PIXEL WAR</h2>
- <div class="cards">
-  <a class="card" href="#civilizations" style="text-decoration:none"><h3>🏛 تمدن‌ها</h3><p>تمدن تاریخی خود را انتخاب کن.</p></a>
-  <a class="card" href="#army" style="text-decoration:none"><h3>⚔ ارتش</h3><p>نیروهای نظامی امپراتوری را مدیریت کن.</p></a>
-  <a class="card" href="#economy" style="text-decoration:none"><h3>💰 اقتصاد</h3><p>خزانه و منابع خود را توسعه بده.</p></a>
-  <a class="card" href="#kingdom" style="text-decoration:none"><h3>👑 پادشاهی</h3><p>فرمانروایی کن و میراث بساز.</p></a>
- </div>
+<section id="adminView" class="hidden">
+<div class="card section"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h1>مرکز فرماندهی مدیر</h1><button class="btn secondary" id="backGame">بازگشت</button></div>
+<div class="notice">عملیات مدیریتی فقط از طریق توابع امن دیتابیس انجام می‌شوند. این نسخه فقط امکاناتی را نمایش می‌دهد که در پایگاه داده موجود و قابل فراخوانی باشند.</div>
+<div class="grid">
+<div class="card"><h2>کنترل بازی</h2><div class="actions"><button class="btn secondary" id="reloadAdmin">بارگذاری دوباره</button><button class="btn" id="endDay">پایان روز بازی</button></div><div id="adminMsg" class="notice hidden"></div></div>
+<div class="card"><h2>وضعیت اتصال</h2><div id="adminStatus" class="muted">در حال بررسی...</div></div>
+</div>
+</div>
 </section>
+<footer>PIXEL WAR Ancient • Build your empire</footer>
+</div>
 
-<section id="account">
- <h2>👤 حساب کاربری</h2>
- <p>برای ورود به دنیای PIXEL WAR حساب بساز یا وارد شو.</p>
- <div id="authArea" class="auth-wrap">
-  <div class="auth-box">
-   <div class="auth-tabs">
-    <button type="button" id="showLogin" class="active">ورود بازیکن</button>
-    <button type="button" id="showRegister">ثبت‌نام بازیکن</button>
-   </div>
-   <form id="loginForm">
-    <h3>ورود به حساب</h3>
-    <div class="field"><label for="loginEmail">ایمیل</label><input id="loginEmail" type="email" autocomplete="email" required></div>
-    <div class="field"><label for="loginPassword">رمز عبور</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
-    <button class="btn" type="submit" id="loginButton">ورود</button>
-   </form>
-   <form id="registerForm" class="hidden">
-    <h3>ساخت حساب بازیکن</h3>
-    <div class="field"><label for="registerUsername">نام کاربری</label><input id="registerUsername" type="text" minlength="3" maxlength="24" autocomplete="username" required></div>
-    <div class="field"><label for="registerEmail">ایمیل</label><input id="registerEmail" type="email" autocomplete="email" required></div>
-    <div class="field"><label for="registerPassword">رمز عبور (حداقل ۶ کاراکتر)</label><input id="registerPassword" type="password" minlength="6" autocomplete="new-password" required></div>
-    <button class="btn" type="submit" id="registerButton">ساخت حساب</button>
-   </form>
-   <div id="authMessage" class="auth-message hidden" role="status"></div>
-  </div>
- </div>
-
- <div id="playerArea" class="auth-box hidden">
-  <h3>👑 داشبورد بازیکن</h3>
-  <p id="playerWelcome" class="muted"></p>
-  <div class="dashboard-grid">
-   <div class="stat"><small>نام کاربری</small><strong id="dashUsername">—</strong></div>
-   <div class="stat"><small>تمدن انتخاب‌شده</small><strong id="dashCountry">انتخاب نشده</strong></div>
-   <div class="stat"><small>موجودی خزانه</small><strong id="dashBalance">—</strong></div>
-   <div class="stat"><small>درآمد روزانه</small><strong id="dashIncome">—</strong></div>
-  </div>
-  <div class="panel-actions">
-   <button type="button" class="btn secondary" id="refreshDashboard">بروزرسانی اطلاعات</button>
-   <button type="button" class="btn danger" id="logoutButton">خروج از حساب</button>
-  </div>
-
-  <div class="auth-box">
-   <h3>🔐 ورود به مدیریت</h3>
-   <p class="muted">ابتدا با حساب مدیر وارد شو و سپس کد مدیریت را وارد کن. تأیید دسترسی در سمت سرور انجام می‌شود.</p>
-   <form id="adminForm">
-    <div class="field"><label for="adminCode">کد مدیریت</label><input id="adminCode" type="password" autocomplete="off" required></div>
-    <button type="submit" class="btn" id="adminButton">تأیید کد و ورود به مدیریت</button>
-   </form>
-   <div id="adminMessage" class="auth-message hidden" role="status"></div>
-  </div>
-
-  <div id="adminArea" class="auth-box hidden">
-   <h3>🛡 پنل مدیریت PIXEL WAR</h3>
-   <p class="auth-message success">دسترسی مدیریت از طرف پایگاه داده تأیید شده است.</p>
-   <p class="muted">این پنل فقط پس از تأیید موفق کد مدیریت نمایش داده می‌شود. عملیات مدیریتی باید با توابع امن دیتابیس انجام شوند.</p>
-   <div class="panel-actions">
-    <button type="button" class="btn secondary" id="adminRefresh">بررسی مجدد دسترسی</button>
-    <button type="button" class="btn" id="endDayButton">اجرای پایان روز بازی</button>
-   </div>
-   <div id="adminActionMessage" class="auth-message hidden" role="status"></div>
-  </div>
- </div>
-</section>
-
-<section id="civilizations">
- <h2>🏛 تمدن‌ها</h2>
- <p>فهرست تمدن‌های عصر باستان</p>
- <div class="notice" id="selectionMessage">برای مشاهده نام تمدن‌ها، از فهرست زیر انتخاب کن.</div>
- <div class="cards" id="civilizationList"></div>
-</section>
-
-<section id="army">
- <h2>⚔ ارتش و نیروهای نظامی</h2>
- <div class="notice">بخش ارتش در این نسخه هنوز به عملیات خرید و ارتقای نیرو در دیتابیس متصل نشده است.</div>
-</section>
-<section id="economy">
- <h2>💰 اقتصاد و درآمد</h2>
- <div class="notice">موجودی و درآمد حساب در داشبورد نمایش داده می‌شود. خرید ساختمان‌ها و تغییر درآمد تا اتصال عملیات اقتصادی فعال نیست.</div>
-</section>
-<section id="kingdom">
- <h2>👑 پادشاهی من</h2>
- <div class="notice">اطلاعات حساب و تمدن انتخاب‌شده در داشبورد بازیکن نمایش داده می‌شود.</div>
-</section>
-<section id="shop">
- <h2>🛒 فروشگاه امپراتوری</h2>
- <div class="notice">فروشگاه در این نسخه نمایشی است و هیچ پرداخت یا خریدی انجام نمی‌دهد.</div>
-</section>
-</main>
-<footer>PIXEL WAR Ancient | دنیای استراتژی و تمدن‌های تاریخی</footer>
-
-<!-- قسمت دوم را دقیقاً از اینجا به انتهای فایل اضافه کن -->
- 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-"use strict";
+(() => {
+  const SUPABASE_URL = "https://knqlsbiduvpmlvqxfegh.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_668mGBx_30R_yxupVlWDcw_yd4rAF3M";
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let mode = "login", currentUser = null, isAdmin = false;
 
-/* اتصال Supabase */
-const SUPABASE_URL = "https://knqlsbiduvpmlvqxfegh.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_668mGBx_30R_yxupVlWDcw_yd4rAF3M";
+  const $ = id => document.getElementById(id);
+  const show = (id, yes=true) => $(id).classList.toggle("hidden", !yes);
+  const msg = (id, text) => { $(id).textContent = text; show(id, true); };
+  const norm = s => s.trim().toLowerCase();
+  const internalEmail = username => `${norm(username)}@accounts.pixelwar.invalid`;
+  const validUsername = s => /^[a-zA-Z0-9_]{3,24}$/.test(s);
 
-const $ = (id) => document.getElementById(id);
+  $("loginTab").onclick = () => setMode("login");
+  $("signupTab").onclick = () => setMode("signup");
+  function setMode(next) {
+    mode = next;
+    $("loginTab").className = next === "login" ? "btn" : "btn secondary";
+    $("signupTab").className = next === "signup" ? "btn" : "btn secondary";
+    $("authBtn").textContent = next === "login" ? "ورود به بازی" : "ساخت فرمانروایی";
+    $("password").autocomplete = next === "login" ? "current-password" : "new-password";
+    show("displayNameField", next === "signup");
+    show("authMsg", false);
+  }
 
-const authArea = $("authArea");
-const playerArea = $("playerArea");
-const adminArea = $("adminArea");
-const authMessage = $("authMessage");
-const adminMessage = $("adminMessage");
-const adminActionMessage = $("adminActionMessage");
+  $("authBtn").onclick = async () => {
+    const username = norm($("username").value);
+    const password = $("password").value;
+    if (!validUsername(username)) return msg("authMsg","نام کاربری باید ۳ تا ۲۴ کاراکتر و فقط شامل حروف انگلیسی، عدد یا _ باشد.");
+    if (password.length < 8) return msg("authMsg","رمز عبور باید حداقل ۸ کاراکتر باشد.");
+    $("authBtn").disabled = true;
+    try {
+      if (mode === "signup") {
+        const { data, error } = await db.auth.signUp({
+          email: internalEmail(username), password,
+          options: { data: { username, display_name: $("displayName").value.trim() || username } }
+        });
+        if (error) throw error;
+        if (!data.session) throw new Error("حساب ساخته شد، اما نشست ورود ایجاد نشد. تنظیم Confirm email را دوباره بررسی کن.");
+        currentUser = data.user;
+      } else {
+        const { data, error } = await db.auth.signInWithPassword({ email: internalEmail(username), password });
+        if (error) throw error;
+        currentUser = data.user;
+      }
+      show("authView", false); show("gameView", true); show("adminView", false);
+      await loadGame();
+    } catch (e) {
+      msg("authMsg", friendlyError(e.message));
+    } finally { $("authBtn").disabled = false; }
+  };
 
-let supabaseClient = null;
-let currentUser = null;
-let adminVerified = false;
-let dashboardRequest = 0;
+  function friendlyError(s) {
+    if (/already registered|already exists/i.test(s)) return "این نام کاربری قبلاً ثبت شده است.";
+    if (/invalid login credentials/i.test(s)) return "نام کاربری یا رمز عبور اشتباه است.";
+    if (/email/i.test(s) && /invalid/i.test(s)) return "Supabase این نشانی داخلی را نپذیرفت؛ برای ورود بدون ایمیل باید روش احراز هویت را اصلاح کنیم.";
+    return s || "خطای نامشخص";
+  }
 
-/* ۲۲ تمدن */
-const civilizations = [
- "شاهنشاهی هخامنشی",
- "امپراتوری بابل",
- "پادشاهی کوش",
- "پادشاهی ماگادا",
- "پادشاهی سبأ",
- "جمهوری کارتاژ",
- "جمهوری روم",
- "آتن",
- "اسپارت",
- "کورینت",
- "آرگوس",
- "تبس",
- "پادشاهی مقدونیه",
- "پادشاهی چین",
- "پادشاهی چو",
- "پادشاهی چی",
- "پادشاهی جین",
- "قبایل ایبری",
- "قبایل بریتانی",
- "پادشاهی کوسالا",
- "پادشاهی آرامی (دمشق)",
- "پادشاهی فریگیه"
-];
-
-/* نمایش پیام */
-function showMessage(element, message, type = "") {
- element.textContent = message;
- element.className = "auth-message";
- if (type) element.classList.add(type);
-}
-
-function hideMessage(element) {
- element.textContent = "";
- element.className = "auth-message hidden";
-}
-
-function formatNumber(value) {
- if (value === null || value === undefined || value === "") return "—";
- const n = Number(value);
- return Number.isFinite(n) ? n.toLocaleString("fa-IR") + " درهم" : String(value);
-}
-
-function setButton(button, disabled, text) {
- button.disabled = disabled;
- button.textContent = text;
-}
-
-/* تب‌های ورود و ثبت‌نام */
-function showLoginTab() {
- $("loginForm").classList.remove("hidden");
- $("registerForm").classList.add("hidden");
- $("showLogin").classList.add("active");
- $("showRegister").classList.remove("active");
- hideMessage(authMessage);
-}
-
-function showRegisterTab() {
- $("registerForm").classList.remove("hidden");
- $("loginForm").classList.add("hidden");
- $("showRegister").classList.add("active");
- $("showLogin").classList.remove("active");
- hideMessage(authMessage);
-}
-
-$("showLogin").addEventListener("click", showLoginTab);
-$("showRegister").addEventListener("click", showRegisterTab);
-
-/* نمایش تمدن‌ها */
-const civilizationList = $("civilizationList");
-
-civilizations.forEach((name) => {
- const card = document.createElement("button");
- card.type = "button";
- card.className = "card civilization";
-
- const title = document.createElement("h3");
- title.textContent = name;
-
- const description = document.createElement("p");
- description.textContent = "برای مشاهده نام تمدن انتخاب کن";
-
- card.append(title, description);
- card.addEventListener("click", () => {
-  $("selectionMessage").textContent =
-   "تمدن انتخاب‌شده: " + name +
-   " — این انتخاب فعلاً آزمایشی است و در حساب ذخیره نمی‌شود.";
-  document.querySelectorAll(".civilization").forEach(item => {
-   item.classList.remove("selected");
-  });
-  card.classList.add("selected");
- });
-
- civilizationList.appendChild(card);
-});
-
-/* ثبت‌نام */
-$("registerForm").addEventListener("submit", async (event) => {
- event.preventDefault();
-
- if (!supabaseClient) {
-  showMessage(authMessage, "اتصال سرویس حساب کاربری برقرار نیست. صفحه را دوباره بارگذاری کن.", "error");
-  return;
- }
-
- const username = $("registerUsername").value.trim();
- const email = $("registerEmail").value.trim();
- const password = $("registerPassword").value;
- const button = $("registerButton");
-
- if (username.length < 3) {
-  showMessage(authMessage, "نام کاربری باید حداقل ۳ کاراکتر باشد.", "error");
-  return;
- }
-
- setButton(button, true, "در حال ساخت حساب...");
-
- try {
-  const { data, error } = await supabaseClient.auth.signUp({
-   email,
-   password,
-   options: {
-    data: {
-     username,
-     display_name: username
+  async function loadGame() {
+    if (!currentUser) return;
+    $("welcome").textContent = "فرمانروا: " + (currentUser.user_metadata?.display_name || currentUser.user_metadata?.username || "بازیکن");
+    const uid = currentUser.id;
+    const [profile, wallet, army, inventory, assets] = await Promise.all([
+      db.from("player_profiles").select("username,display_name,country_id").eq("id",uid).maybeSingle(),
+      db.from("player_wallets").select("balance,base_daily_income,total_daily_income,debt").eq("user_id",uid).maybeSingle(),
+      db.from("player_army").select("unit_name,quantity,base_power,defense_bonus").eq("user_id",uid),
+      db.from("player_inventory").select("item_name,quantity,attack_bonus,defense_bonus").eq("user_id",uid),
+      db.from("player_assets").select("asset_name,quantity,daily_income").eq("user_id",uid)
+    ]);
+    for (const r of [profile,wallet,army,inventory,assets]) if (r.error) console.warn(r.error);
+    const p = profile.data || {}, w = wallet.data || {};
+    $("welcome").textContent = "فرمانروا: " + (p.display_name || p.username || currentUser.user_metadata?.display_name || "بازیکن");
+    $("balance").textContent = number(w.balance);
+    $("income").textContent = number(w.total_daily_income ?? w.base_daily_income);
+    $("defense").textContent = "—";
+    $("countryLabel").textContent = p.country_id ? "کشور: " + p.country_id : "هنوز کشوری انتخاب نشده است";
+    $("countryArea").innerHTML = p.country_id ? escapeHtml(p.country_id) : "هنوز کشوری برای این حساب ثبت نشده است.";
+    renderRows("armyArea",army.data || [],"unit_name",x=>`تعداد: ${number(x.quantity)} • قدرت پایه: ${number(x.base_power)}`);
+    renderRows("inventoryArea",inventory.data || [],"item_name",x=>`تعداد: ${number(x.quantity)} • حمله +${number(x.attack_bonus)} • دفاع +${number(x.defense_bonus)}`);
+    if ((assets.data || []).length) {
+      const el = document.createElement("div");
+      (assets.data || []).forEach(a=>{const d=document.createElement("div");d.className="item";d.textContent=`${a.asset_name} × ${a.quantity} — درآمد ${number(a.daily_income)}`;el.appendChild(d);});
+      $("countryArea").appendChild(el);
     }
-   }
-  });
-
-  if (error) throw error;
-
-  $("registerForm").reset();
-
-  if (data.session) {
-   showMessage(authMessage, "حساب ساخته شد و وارد بازی شدی.", "success");
-  } else {
-   showMessage(
-    authMessage,
-    "درخواست ثبت‌نام انجام شد. اگر تأیید ایمیل فعال باشد، ایمیلت را تأیید کن و سپس وارد شو.",
-    "success"
-   );
-   showLoginTab();
-  }
- } catch (error) {
-  showMessage(authMessage, "خطا در ثبت‌نام: " + error.message, "error");
- } finally {
-  setButton(button, false, "ساخت حساب");
- }
-});
-
-/* ورود */
-$("loginForm").addEventListener("submit", async (event) => {
- event.preventDefault();
-
- if (!supabaseClient) {
-  showMessage(authMessage, "اتصال سرویس حساب کاربری برقرار نیست. صفحه را دوباره بارگذاری کن.", "error");
-  return;
- }
-
- const email = $("loginEmail").value.trim();
- const password = $("loginPassword").value;
- const button = $("loginButton");
-
- setButton(button, true, "در حال ورود...");
-
- try {
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-   email,
-   password
-  });
-
-  if (error) throw error;
-
-  if (data.user) {
-   await loadPlayerDashboard(data.user);
-   showMessage(authMessage, "ورود موفقیت‌آمیز بود.", "success");
-  }
- } catch (error) {
-  showMessage(authMessage, "خطا در ورود: " + error.message, "error");
- } finally {
-  setButton(button, false, "ورود");
- }
-});
-
-/* بارگذاری داشبورد */
-async function loadPlayerDashboard(user) {
- const requestId = ++dashboardRequest;
- currentUser = user;
- adminVerified = false;
-
- authArea.classList.add("hidden");
- playerArea.classList.remove("hidden");
- adminArea.classList.add("hidden");
- hideMessage(adminMessage);
- hideMessage(adminActionMessage);
-
- $("playerWelcome").textContent = "حساب فعال: " + (user.email || "");
- $("dashUsername").textContent = "در حال دریافت...";
- $("dashCountry").textContent = "—";
- $("dashBalance").textContent = "—";
- $("dashIncome").textContent = "—";
-
- try {
-  const [profileResult, walletResult] = await Promise.all([
-   supabaseClient
-    .from("player_profiles")
-    .select("username, display_name, country_id")
-    .eq("id", user.id)
-    .maybeSingle(),
-
-   supabaseClient
-    .from("player_wallets")
-    .select("balance, base_daily_income, total_daily_income, debt")
-    .eq("user_id", user.id)
-    .maybeSingle()
-  ]);
-
-  if (requestId !== dashboardRequest) return;
-  if (profileResult.error) throw profileResult.error;
-  if (walletResult.error) throw walletResult.error;
-
-  const profile = profileResult.data;
-  const wallet = walletResult.data;
-
-  $("dashUsername").textContent =
-   profile?.username || profile?.display_name || "ثبت نشده";
-
-  $("dashCountry").textContent =
-   profile?.country_id || "انتخاب نشده";
-
-  $("dashBalance").textContent =
-   wallet ? formatNumber(wallet.balance) : "اطلاعات موجود نیست";
-
-  $("dashIncome").textContent =
-   wallet
-    ? formatNumber(wallet.total_daily_income ?? wallet.base_daily_income)
-    : "اطلاعات موجود نیست";
-
- } catch (error) {
-  if (requestId === dashboardRequest) {
-   showMessage(
-    adminMessage,
-    "ورود انجام شده، اما دریافت اطلاعات داشبورد با مشکل مواجه شد: " + error.message,
-    "error"
-   );
-  }
- }
-}
-
-/* ورود به مدیریت با بررسی سمت سرور */
-$("adminForm").addEventListener("submit", async (event) => {
- event.preventDefault();
-
- if (!currentUser) {
-  showMessage(adminMessage, "ابتدا وارد حساب کاربری شو.", "error");
-  return;
- }
-
- const code = $("adminCode").value.trim();
- const button = $("adminButton");
-
- if (!code) {
-  showMessage(adminMessage, "کد مدیریت را وارد کن.", "error");
-  return;
- }
-
- setButton(button, true, "در حال بررسی...");
-
- try {
-  const { data, error } = await supabaseClient.rpc(
-   "admin_verify_code",
-   { p_code: code }
-  );
-
-  if (error) throw error;
-
-  const result = Array.isArray(data) ? data[0] : data;
-
-  if (result?.success === true) {
-   adminVerified = true;
-   adminArea.classList.remove("hidden");
-   $("adminCode").value = "";
-   showMessage(adminMessage, "هویت مدیر تأیید شد.", "success");
-  } else {
-   adminVerified = false;
-   adminArea.classList.add("hidden");
-   showMessage(
-    adminMessage,
-    result?.message || "کد مدیریت صحیح نیست یا دسترسی تأیید نشد.",
-    "error"
-   );
-  }
- } catch (error) {
-  adminVerified = false;
-  adminArea.classList.add("hidden");
-  showMessage(adminMessage, "خطا در بررسی کد مدیریت: " + error.message, "error");
- } finally {
-  setButton(button, false, "تأیید کد و ورود به مدیریت");
- }
-});
-
-/* بررسی مجدد دسترسی مدیر */
-$("adminRefresh").addEventListener("click", async () => {
- if (!currentUser || !adminVerified) {
-  adminArea.classList.add("hidden");
-  showMessage(adminMessage, "برای دسترسی دوباره باید کد مدیریت را تأیید کنی.", "error");
-  return;
- }
-
- try {
-  const { data, error } = await supabaseClient.rpc("is_game_admin");
-
-  if (error) throw error;
-
-  if (data === true) {
-   showMessage(adminActionMessage, "دسترسی مدیریتی همچنان فعال است.", "success");
-  } else {
-   adminVerified = false;
-   adminArea.classList.add("hidden");
-   showMessage(adminMessage, "نشست مدیریت معتبر نیست. دوباره کد را وارد کن.", "error");
-  }
- } catch (error) {
-  showMessage(adminActionMessage, "خطا در بررسی دسترسی: " + error.message, "error");
- }
-});
-
-/* پایان روز بازی */
-$("endDayButton").addEventListener("click", async () => {
- if (!currentUser || !adminVerified) {
-  showMessage(adminActionMessage, "ابتدا دسترسی مدیریت را تأیید کن.", "error");
-  return;
- }
-
- const confirmed = window.confirm(
-  "آیا مطمئنی می‌خواهی روز بازی بسته شود؟ این عملیات ممکن است غیرقابل بازگشت باشد."
- );
-
- if (!confirmed) return;
-
- const button = $("endDayButton");
- setButton(button, true, "در حال اجرای عملیات...");
-
- try {
-  const { data, error } = await supabaseClient.rpc("admin_end_day");
-
-  if (error) throw error;
-
-  showMessage(
-   adminActionMessage,
-   "درخواست پایان روز اجرا شد. پاسخ سرور: " + JSON.stringify(data),
-   "success"
-  );
-
-  await loadPlayerDashboard(currentUser);
- } catch (error) {
-  showMessage(
-   adminActionMessage,
-   "عملیات پایان روز انجام نشد: " + error.message,
-   "error"
-  );
- } finally {
-  setButton(button, false, "اجرای پایان روز بازی");
- }
-});
-
-/* خروج */
-$("logoutButton").addEventListener("click", async () => {
- try {
-  const { error } = await supabaseClient.auth.signOut();
-  if (error) throw error;
-
-  currentUser = null;
-  adminVerified = false;
-  playerArea.classList.add("hidden");
-  adminArea.classList.add("hidden");
-  authArea.classList.remove("hidden");
-  hideMessage(adminMessage);
-  showLoginTab();
- } catch (error) {
-  showMessage(adminMessage, "خطا در خروج: " + error.message, "error");
- }
-});
-
-/* بروزرسانی داشبورد */
-$("refreshDashboard").addEventListener("click", async () => {
- try {
-  const { data, error } = await supabaseClient.auth.getUser();
-  if (error) throw error;
-
-  if (data.user) {
-   await loadPlayerDashboard(data.user);
-  } else {
-   currentUser = null;
-   playerArea.classList.add("hidden");
-   authArea.classList.remove("hidden");
-  }
- } catch (error) {
-  showMessage(adminMessage, "خطا در بروزرسانی: " + error.message, "error");
- }
-});
-
-/* راه‌اندازی برنامه */
-async function initializeApp() {
- try {
-  if (!window.supabase?.createClient) {
-   throw new Error("کتابخانه Supabase بارگذاری نشده است. اتصال اینترنت یا CDN را بررسی کن.");
+    await loadShop();
   }
 
-  supabaseClient = window.supabase.createClient(
-   SUPABASE_URL,
-   SUPABASE_PUBLISHABLE_KEY
-  );
-
-  const { data, error } = await supabaseClient.auth.getSession();
-  if (error) throw error;
-
-  if (data.session?.user) {
-   await loadPlayerDashboard(data.session.user);
+  function renderRows(target, rows, nameKey, detail) {
+    const root = $(target); root.replaceChildren();
+    if (!rows.length) { root.textContent = "هنوز موردی ثبت نشده است."; return; }
+    rows.forEach(x=>{const d=document.createElement("div");d.className="item";const a=document.createElement("strong");a.textContent=x[nameKey] || "—";const b=document.createElement("span");b.className="muted";b.textContent=detail(x);d.append(a,b);root.appendChild(d);});
   }
 
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-   if (event === "SIGNED_OUT" || !session?.user) {
-    currentUser = null;
-    adminVerified = false;
-    playerArea.classList.add("hidden");
-    adminArea.classList.add("hidden");
-    authArea.classList.remove("hidden");
-    return;
-   }
-
-   if (event === "SIGNED_IN" || event === "INITIAL_SESSION" || event === "TOKEN_REFRESHED") {
-    const user = session.user;
-    queueMicrotask(() => {
-     if (currentUser?.id !== user.id || playerArea.classList.contains("hidden")) {
-      loadPlayerDashboard(user);
-     }
+  async function loadShop() {
+    const root = $("shopArea"); root.textContent = "در حال دریافت کالاها...";
+    const {data,error} = await db.from("shop_items").select("id,item_name,category,price,attack_bonus,defense_bonus,base_power,daily_income,max_quantity,is_active,purchase_size").eq("is_active",true).order("category").order("price");
+    if (error) { root.textContent = "دریافت فروشگاه ناموفق بود: " + error.message; return; }
+    root.replaceChildren();
+    if (!data?.length) { root.textContent = "در حال حاضر کالای فعالی در فروشگاه نیست."; return; }
+    data.forEach(item=>{
+      const row=document.createElement("div");row.className="item";
+      const info=document.createElement("div");const title=document.createElement("strong");title.textContent=item.item_name;
+      const sub=document.createElement("div");sub.className="muted";sub.textContent=`${item.category || "کالا"} • قیمت: ${number(item.price)} درهم`;
+      info.append(title,sub);
+      const buy=document.createElement("button");buy.className="btn";buy.textContent="خرید";
+      buy.onclick=async()=>{buy.disabled=true;try{const {error}=await db.rpc("buy_shop_item",{p_item_id:item.id,p_quantity:1});if(error)throw error;alert("خرید با موفقیت ثبت شد.");await loadGame();}catch(e){alert("خرید انجام نشد: "+e.message);}finally{buy.disabled=false;}};
+      row.append(info,buy);root.appendChild(row);
     });
-   }
+  }
+
+  $("logoutBtn").onclick = async()=>{await db.auth.signOut();currentUser=null;isAdmin=false;show("gameView",false);show("adminView",false);show("authView",true);};
+  $("adminOpen").onclick = async()=>{
+    const code=prompt("کد ورود مدیر را وارد کن:");
+    if(!code) return;
+    try {
+      const {data,error}=await db.rpc("admin_verify_code",{p_code:code});
+      if(error)throw error;
+      if(!data || data.success!==true)throw new Error(data?.message || "کد مدیر نادرست است.");
+      isAdmin=true;show("gameView",false);show("adminView",true);
+      $("adminStatus").textContent="ورود مدیر تأیید شد. نشست مدیریتی سمت سرور فعال است.";
+    } catch(e){alert("ورود مدیر ناموفق بود: "+e.message);}
+  };
+  $("backGame").onclick=()=>{show("adminView",false);show("gameView",true);};
+  $("reloadAdmin").onclick=async()=>{if(!isAdmin)return; $("adminStatus").textContent="نشست مدیر فعال است؛ برای بررسی وضعیت داده‌ها داشبورد را دوباره بارگذاری کن.";};
+  $("endDay").onclick=async()=>{
+    if(!isAdmin)return alert("ابتدا وارد پنل مدیریت شو.");
+    if(!confirm("از اجرای پایان روز مطمئنی؟ این عملیات ممکن است درآمد و وضعیت بازی را تغییر دهد."))return;
+    try{const {data,error}=await db.rpc("admin_end_day");if(error)throw error;msg("adminMsg",typeof data==="string"?data:JSON.stringify(data));}
+    catch(e){msg("adminMsg","عملیات پایان روز ناموفق بود: "+e.message);}
+  };
+
+  function number(v){return Number(v||0).toLocaleString("en-US");}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+  db.auth.getSession().then(async({data})=>{
+    if(data.session){currentUser=data.session.user;show("authView",false);show("gameView",true);await loadGame();}
   });
-
- } catch (error) {
-  showMessage(
-   authMessage,
-   "راه‌اندازی حساب کاربری ناموفق بود: " + error.message,
-   "error"
-  );
- }
-}
-
-initializeApp();
+})();
 </script>
 </body>
 </html>
