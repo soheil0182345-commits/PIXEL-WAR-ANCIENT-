@@ -6,21 +6,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#10100e">
 <title>PIXEL WAR | Ancient</title>
+
 <style>
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
  margin:0;background:#10100e;color:#eee7d5;
  font-family:Tahoma,Arial,sans-serif;
 }
 header{
- padding:22px 18px;display:flex;
- justify-content:space-between;align-items:center;
+ padding:18px;display:flex;justify-content:space-between;
+ align-items:center;flex-wrap:wrap;gap:14px;
  border-bottom:1px solid #554324;
+ background:#15140f;position:sticky;top:0;z-index:10;
 }
 .logo{font-size:22px;font-weight:bold;letter-spacing:2px;color:#d6ad65}
-nav a{color:#d8c9a9;text-decoration:none;margin-right:12px;font-size:13px}
+nav{display:flex;flex-wrap:wrap;gap:12px}
+nav a{color:#d8c9a9;text-decoration:none;font-size:13px}
+nav a:hover{color:#e8bd70}
 .hero{
- min-height:76vh;display:flex;align-items:center;
+ min-height:70vh;display:flex;align-items:center;
  justify-content:center;text-align:center;padding:35px 20px;
  background:linear-gradient(#10100edb,#10100ef2),
  radial-gradient(ellipse at center,#69502c,#10100e 75%);
@@ -29,49 +34,205 @@ h1{font-size:clamp(35px,9vw,65px);color:#e1bd79;margin:0 0 18px}
 .hero p{line-height:2;color:#c7bda8;max-width:540px;margin:0 auto 28px}
 .btn{
  display:inline-block;background:#b58a47;color:#17130d;
- padding:14px 28px;border-radius:5px;
- text-decoration:none;font-weight:bold;
+ padding:13px 24px;border-radius:5px;text-decoration:none;
+ font-weight:bold;border:0;cursor:pointer;font-family:inherit;
 }
-section{padding:45px 20px;text-align:center}
+.btn:hover{background:#d6ad65}
+section{padding:45px 20px;text-align:center;scroll-margin-top:85px}
 h2{color:#d6ad65}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px;max-width:900px;margin:25px auto}
-.card{padding:25px 15px;border:1px solid #554324;background:#191813;border-radius:8px}
-.card h3{color:#d6ad65}
+.cards{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+ gap:15px;max-width:1000px;margin:25px auto;
+}
+.card{
+ padding:23px 15px;border:1px solid #554324;
+ background:#191813;border-radius:8px;color:#eee7d5;
+}
+.card h3{color:#d6ad65;margin-top:8px}
 .card p{color:#aaa18e;line-height:1.9;font-size:14px}
-footer{padding:25px;text-align:center;border-top:1px solid #554324;color:#8e8778;font-size:12px}
+.civilization{
+ cursor:pointer;transition:.2s;min-height:110px;
+}
+.civilization:hover{border-color:#d6ad65;transform:translateY(-3px)}
+.civilization.selected{border:2px solid #d6ad65;background:#292216}
+.notice{
+ max-width:650px;margin:20px auto;padding:15px;
+ border:1px solid #554324;border-radius:8px;
+ color:#d8c9a9;line-height:2;background:#191813;
+}
+.hidden{display:none}
+footer{
+ padding:25px;text-align:center;border-top:1px solid #554324;
+ color:#8e8778;font-size:12px;
+}
+button:focus-visible,a:focus-visible{
+ outline:2px solid #e1bd79;outline-offset:4px
+}
+@media(max-width:500px){
+ header{justify-content:center}
+ nav{justify-content:center}
+ nav a{font-size:12px}
+}
 </style>
 </head>
+
 <body>
+
 <header>
  <div class="logo">PIXEL WAR</div>
- <nav><a href="#about">درباره بازی</a><a href="#features">امکانات</a></nav>
+ <nav>
+  <a href="#home">خانه</a>
+  <a href="#about">درباره بازی</a>
+  <a href="#civilizations">تمدن‌ها</a>
+  <a href="#army">ارتش</a>
+  <a href="#economy">اقتصاد</a>
+  <a href="#kingdom">پادشاهی</a>
+  <a href="#shop">فروشگاه</a>
+ </nav>
 </header>
 
 <main>
- <div class="hero">
-  <div>
-   <h1>PIXEL WAR</h1>
-   <p>امپراتوری خود را بنا کن، ارتش خود را فرماندهی کن و در تاریخ تمدن‌های باستانی نامی جاودانه بساز.</p>
-   <a class="btn" href="#features">ورود به دنیای باستان</a>
-  </div>
+
+<section class="hero" id="home">
+ <div>
+  <h1>PIXEL WAR</h1>
+  <p>
+   امپراتوری خود را بنا کن، ارتش خود را فرماندهی کن
+   و در تاریخ تمدن‌های باستانی نامی جاودانه بساز.
+  </p>
+  <a class="btn" href="#civilizations">مشاهده تمدن‌ها</a>
+ </div>
+</section>
+
+<section id="about">
+ <h2>عصر امپراتوری‌ها</h2>
+ <p>
+  در جهانی از تمدن‌ها، اقتصاد، سیاست و جنگ،
+  سرنوشت امپراتوری خودت را رقم بزن.
+ </p>
+</section>
+
+<section id="features">
+ <h2>جهان PIXEL WAR</h2>
+ <div class="cards">
+  <a class="card civilization" href="#civilizations" style="text-decoration:none">
+   <h3>🏛 تمدن‌ها</h3>
+   <p>از میان تمدن‌های تاریخی، سرزمین خود را انتخاب کن.</p>
+  </a>
+  <a class="card" href="#army" style="text-decoration:none">
+   <h3>⚔ ارتش</h3>
+   <p>ارتش بساز و از سرزمینت دفاع کن.</p>
+  </a>
+  <a class="card" href="#economy" style="text-decoration:none">
+   <h3>💰 اقتصاد</h3>
+   <p>منابع جمع‌آوری کن و امپراتوری خود را توسعه بده.</p>
+  </a>
+  <a class="card" href="#kingdom" style="text-decoration:none">
+   <h3>👑 پادشاهی</h3>
+   <p>فرمانروایی کن و میراث خود را در تاریخ ثبت کن.</p>
+  </a>
+ </div>
+</section>
+
+<section id="civilizations">
+ <h2>🏛 انتخاب تمدن</h2>
+ <p>تمدن مورد علاقه‌ات را انتخاب کن.</p>
+
+ <div class="notice" id="selectionMessage">
+  هنوز تمدنی انتخاب نکرده‌ای.
  </div>
 
- <section id="about">
-  <h2>عصر امپراتوری‌ها</h2>
-  <p>در جهانی از تمدن‌ها، اقتصاد، سیاست و جنگ، سرنوشت امپراتوری خودت را رقم بزن.</p>
- </section>
+ <div class="cards" id="civilizationList"></div>
+</section>
 
- <section id="features">
-  <h2>جهان PIXEL WAR</h2>
-  <div class="cards">
-   <div class="card"><h3>🏛 تمدن‌ها</h3><p>از میان ۲۲ تمدن تاریخی، سرزمین خود را انتخاب کن.</p></div>
-   <div class="card"><h3>⚔ ارتش</h3><p>ارتش بساز، نیروها را تقویت کن و از سرزمینت دفاع کن.</p></div>
-   <div class="card"><h3>💰 اقتصاد</h3><p>منابع جمع‌آوری کن و امپراتوری خود را توسعه بده.</p></div>
-   <div class="card"><h3>👑 پادشاهی</h3><p>فرمانروایی کن و میراث خود را در تاریخ ثبت کن.</p></div>
-  </div>
- </section>
+<section id="army">
+ <h2>⚔ ارتش و نیروهای نظامی</h2>
+ <div class="notice">
+  در این بخش می‌توانی نیروهای نظامی، تجهیزات و قدرت دفاعی
+  امپراتوری خود را مدیریت کنی.
+  <br>اتصال امکانات نظامی به حساب بازیکن در مرحله بعد انجام می‌شود.
+ </div>
+</section>
+
+<section id="economy">
+ <h2>💰 اقتصاد و درآمد</h2>
+ <div class="notice">
+  مدیریت خزانه، درآمد روزانه، منابع و ساختمان‌های اقتصادی
+  در این بخش قرار می‌گیرد.
+  <br>اطلاعات مالی هنوز به کیف پول Supabase متصل نیست.
+ </div>
+</section>
+
+<section id="kingdom">
+ <h2>👑 پادشاهی من</h2>
+ <div class="notice">
+  اطلاعات پادشاه، کشور، وضعیت امپراتوری و آمار بازیکن
+  در این بخش نمایش داده خواهد شد.
+ </div>
+</section>
+
+<section id="shop">
+ <h2>🛒 فروشگاه امپراتوری</h2>
+ <div class="notice">
+  فروشگاه نیروها، تجهیزات، امکانات اقتصادی و بسته‌های ویژه
+  در این قسمت قرار می‌گیرد.
+  <br>خریدها هنوز فعال نیستند.
+ </div>
+</section>
+
 </main>
 
-<footer>PIXEL WAR Ancient | دنیای استراتژی و تمدن‌های تاریخی</footer>
+<footer>
+ PIXEL WAR Ancient | دنیای استراتژی و تمدن‌های تاریخی
+</footer>
+
+<script>
+const civilizations = [
+ "شاهنشاهی هخامنشی",
+ "امپراتوری بابل",
+ "پادشاهی کوش",
+ "پادشاهی ماگادا",
+ "پادشاهی سبأ",
+ "جمهوری کارتاژ",
+ "جمهوری روم",
+ "آتن",
+ "اسپارت",
+ "کورینت",
+ "آرگوس",
+ "تبس",
+ "پادشاهی مقدونیه",
+ "پادشاهی چین",
+ "پادشاهی چو",
+ "پادشاهی چی",
+ "پادشاهی جین",
+ "قبایل ایبری",
+ "قبایل بریتانی",
+ "پادشاهی کوسالا",
+ "پادشاهی آرامی (دمشق)",
+ "پادشاهی فریگیه"
+];
+
+const list = document.getElementById("civilizationList");
+const message = document.getElementById("selectionMessage");
+
+civilizations.forEach((name,index)=>{
+ const card=document.createElement("button");
+ card.type="button";
+ card.className="card civilization";
+ card.innerHTML="<h3></h3><p>برای انتخاب لمس کن</p>";
+ card.querySelector("h3").textContent=name;
+
+ card.addEventListener("click",()=>{
+  document.querySelectorAll(".civilization").forEach(item=>{
+   item.classList.remove("selected");
+  });
+  card.classList.add("selected");
+  message.textContent="تمدن انتخاب‌شده: "+name+
+   " | این انتخاب فعلاً آزمایشی است و در حساب کاربری ذخیره نمی‌شود.";
+ });
+ list.appendChild(card);
+});
+</script>
+
 </body>
 </html>
